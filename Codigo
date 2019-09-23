@@ -1,1 +1,28 @@
 
+def Variables(renglon, lista):
+	mensaje = renglon.find ("EQU")
+	if(mensaje !=-1):
+		instruccion = renglon[0:mensaje]
+		instruccion = instruccion.strip()
+		operando = renglon[mensaje+3:len(renglon)]
+		operando = operando.strip()
+		lista.append([instruccion, operando])
+	return lista
+
+
+
+## Menú principal
+archivo = open("EJEMPLO.ASC","r")
+listaVar=[]
+ocurrencias = ""
+equ = "EQU"
+with open ('EJEMPLO.ASC') as lineas:
+	for linea in lineas:
+		ocurrencias=linea
+		if(ocurrencias.find("ORG")!=-1):		
+			break
+		listaVar = Variables(ocurrencias , listaVar)
+
+
+
+print(listaVar)
