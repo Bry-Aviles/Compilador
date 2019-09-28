@@ -1,3 +1,17 @@
+###Direccionamiento
+
+IMM=[["adca", "89", 2], ["adcb", "C9", 2], ["adda", "8B", 2], ["addb", "CB", 2], ["addd", "C3", 3], ["anda", "84", 2],["andb", "C4", 2],
+["bita", "85", 2],["bitb", "C5", 2], ["cmpa", "81", 2],["cmpb", "C1", 2], ["cpd","1A83",4],["cpx","8C",3],["cpy","188C",4],["eora","88",2],
+["eorb", "C8",2],["ldaa","86",2],["ldab","C6",2],["ldd","CC",3],["lds","8E",3],["ldx","CE",3],["ldy","18CE",4],["oraa","8A",2],["orab","CA",2],
+["sbca","82",2],["sbcb","C2",2],["suba","80",2],["subb","C0",2],["subd","83",3]]
+
+
+DIR=[["adca", "99", 2], ["adcb", "D9", 2], ["adda", "9B", 2], ["addb", "DB", 2], ["addd", "D3", 2], ["anda", "94", 2],["andb", "D4", 2],["bclr", "15",3],
+["bita", "95", 2], ["bitb", "D5", 2], ["brclr", "13", 4], ["brset", "12", 4], ["bset", "14",3],["cmpa", "91", 2],["cmpb", "D1", 2], ["cpd","1A93",3],["cpx","9C",2],["cpy","189C",3],
+["eora","98",2],["eorb", "D8",2], ["jsr", "9D", 2] ,["ldaa","96",2], ["ldab","D6",2],["ldd","DC",2],["lds","9E",2],["ldx","DE",2],["ldy","18DE",3],  
+["oraa","9A",2],["orab","DA",2],["sbca","92",2],["sbcb","D2",2], ["staa", "97", 2], ["stab", "D7", 2], ["std", "DD", 2], ["sts", "9F", 2],
+["stx", "DF", 2], ["sty", "18DF", 3], ["suba","90",2], ["subb","D0",2],["subd","93",2]]
+
 
 def Variables(renglon, lista):
 	mensaje = renglon.find ("EQU")
@@ -11,13 +25,52 @@ def Variables(renglon, lista):
 
 
 
-## Menú principal
-archivo = open("EJEMPLO.ASC","r")
-listaVar=[]
+
+def EnumReng(posicion,cadena,listaReng):	 
+
+	listaReng.append([posicion, cadena])
+	return listaReng
+
+
+
+def QuitarAsteriscos(cadena):
+	recorte =cadena.find('*')
+
+	if(recorte!=-1):
+		
+		cadena= cadena[0:recorte]
+	return cadena
+
+
+
+def Etiquetas(cadenas, listaEti):
+	
+	if (cadenas[0]!=" " and cadenas[0]!="*" ):
+		cadenas=cadenas[0:cadenas.find(" ")]
+
+
+		listaEti.append(cadenas)
+
+	return listaEti
+
+#############################################################################
+##########                Menú principal                        #########
+#############################################################################
+
+
+listaVar =[]
+listaReng =[]
+Etiqueta = []
 ocurrencias = ""
+Enumeracion = ""
 equ = "EQU"
-with open ('EJEMPLO.ASC') as lineas:
-	for linea in lineas:
+N=0
+
+
+ #Manda las lineas del archivo a la función Variables
+
+with open ('EJEMPLO.ASC') as lineas: 
+	for linea in lineas:  
 		ocurrencias=linea
 		if(ocurrencias.find("ORG")!=-1):		
 			break
@@ -25,4 +78,55 @@ with open ('EJEMPLO.ASC') as lineas:
 
 
 
-print(listaVar)
+
+#MCodigo para enumerar archivos
+
+with open ('EJEMPLO.ASC') as lineas:    
+	bandera=0
+	cont=1
+	for linea in lineas:
+		Enumeracion=linea
+		Enumeracion=Enumeracion.strip()
+		Enumeracion= QuitarAsteriscos(Enumeracion)
+
+		if(Enumeracion.find("ORG")!=-1):
+			bandera =1
+
+		if(bandera == 1 and len(Enumeracion)!=0):
+
+
+			listaReng = EnumReng(cont,Enumeracion,listaReng) 
+			cont=cont+1
+
+
+
+
+
+#Para lista de etiquetas
+with open ('EJEMPLO.ASC') as lineas: 
+	bandera=0
+	for linea in lineas:  
+		
+		if(linea.find("ORG")!=-1):
+			bandera =1
+
+
+
+		if(bandera == 1 and len(linea.strip())!=0):
+
+			Etiqueta = Etiquetas(linea, Etiqueta)
+
+
+
+
+
+
+
+for i in listaReng:
+	print(i)
+
+
+
+
+
+
